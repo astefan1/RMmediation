@@ -38,18 +38,18 @@ report_rmmediation <- function(fit, digits = 2) {
   SDindirect <- sqrt(VarIndirect)
 
   # Summarize fixed path coefficients
-  fixedcoefs <- rbind(.draws_summary(fixedeffects),
-                      .draws_summary(indirect),
-                      .draws_summary(total))
+  fixedcoefs <- rbind(.draws_summary(fixedeffects, digits),
+                      .draws_summary(indirect, digits),
+                      .draws_summary(total, digits))
   fixedcoefs[, "Parameter"] <- c("a", "b", "c'", "indirect", "total")
 
   randomcoefs <- data.frame("Parameter" = c("SD(a)", "SD(b)", "cor(a,b)", "SD(indirect)"),
-                            "Estimate" = c(mean(randomeffects[,,"sd_ID__SMX"]),
-                                           mean(randomeffects[,,"sd_ID__SYM"]),
-                                           mean(corRanEffAB),
-                                           mean(SDindirect)))
+                            "Estimate" = c(round(mean(randomeffects[,,"sd_ID__SMX"]), digits),
+                                           round(mean(randomeffects[,,"sd_ID__SYM"]), digits),
+                                           round(mean(corRanEffAB), digits),
+                                           round(mean(SDindirect), digits)))
 
-  return(cat(knitr::kable(fixedcoefs, row.names = FALSE, caption = "Fixed Effects"), knitr::kable(randomcoefs, caption = "Random Effects"), sep = "\n\n"))
+  return(cat(knitr::kable(fixedcoefs, row.names = FALSE, caption = "Fixed Effects"), "\n", knitr::kable(randomcoefs, caption = "Random Effects"), sep = "\n"))
 
 
 }

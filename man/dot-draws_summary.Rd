@@ -4,10 +4,12 @@
 \alias{.draws_summary}
 \title{Summary of posterior distribution}
 \usage{
-.draws_summary(draws)
+.draws_summary(draws, digits)
 }
 \arguments{
 \item{draws}{Array of posterior draws}
+
+\item{digits}{Number of reported digits}
 }
 \description{
 Extracts posterior mean, SD, and 95\% central credible interval from posterior samples

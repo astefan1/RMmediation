@@ -1,0 +1,106 @@
+---
+title: "Workflow for Repeated Measures Mediation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Workflow for Repeated Measures Mediation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, echo=FALSE}
+library(RMmediation)
+```
+
+## Introduction
+
+This R-package contains custom functions to compute a 1-1-1 repeated measures mediation analysis using Bayesian estimation. A 1-1-1 repeated-measures mediation analysis is a mediation analysis where predictor (X), mediator (M), and outcome (Y) variable are all measured at the trial level. The package is built based on two articles: [Bauer et al. (2006)](https://doi.apa.org/doi/10.1037/1082-989X.11.2.142) describes the general methodology, including a specific way to structure the data that allows for easy fitting of the mediation model. [Falk et al. (2023)](https://link.springer.com/10.3758/s13428-023-02079-4) provide an implementation in the R package *brms* that we build on here. If you want to work with this code, please try to read these two articles first.
+
+## Prerequisites
+
+To work with this code, you need to have R and RStudio installed on your computer. You should also be familiar with how to read in data with R and filter it for specific rows and columns. A good introduction to R basics is provided in Chapter 3-4 in [Learning Statistics with R](https://learningstatisticswithr.com/lsr-0.6.pdf).
+
+## How to use this code
+
+Below are the steps you'll need to follow to use this code. Copy and paste each line of code into an R script and execute it.
+
+### Step 1: Install the package
+
+The code is stored in the form of an R package. This R package is not available on CRAN like your usual R packages, but you can download it from an online repository with the code below. Once installed, you can call the package using the library() command just as you would use for any other R package (if you don't know what an R package is, read up on it in Learning Statistics with R). You'll only need to install the package once on your computer.
+
+```{r eval=FALSE}
+install.packages("devtools")
+devtools::install_github("astefan1/RMmediation", build_vignettes = TRUE)
+```
+
+### Step 2: Read in data
+
+In the following, we will assume that your data is initially available in long format, with a variable that indicates the subject ID, and a variable each for the predictor, mediator, and outcome variable. There can be other variables in your dataset (e.g., a variable indicating the gender of the subject), but these are the important ones. Your dataset should look something like this:
+
+|Subject ID | Predictor X | Mediator M | Outcome Y |
+|-----------|-------------|------------|-----------|
+|1          |0            |17          |320        |
+|1          |600          |19.5        |555        |
+|1          |900          |18.6        |640        |
+|1          |1200         |15.7        |793        |
+|2          |0            |20.1        |220        |
+|2          |600          |22.2        |330        |
+
+... and so on. What's important is that there are multiple measurement occasions for each subject, that is, the subject ID should be reoccurring in your dataset (if it doesn't you can probably conduct a simple mediation analysis and you don't need this code). The predictor will typically be an experimentally manipulated variable, e.g., food intake. The mediator is a variable that you assume will be changed due to the food intake, and the outcome variable then changes due to the changes in the mediator (and the changes in the predictor).
+
+For the purpose of explaining the package, we'll use some simulated (i.e., made-up) data. We'll assume that X is a preload meal (0, 600, 900, 1200 kcal), Y is the desired food intake (in kcal), and M is an appetite rating. There are 15 participants, each participant undergoes every condition. Here are the first 10 rows of the dataset, which we'll call `exampledata`.
+
+```{r echo=FALSE}
+set.seed(1234)
+exampledata <- data.frame(ID = rep(1:15, each=4))
+exampledata$Preload <- rep(c(0, 600, 900, 1200), 15)
+randomIDM <- rep(rnorm(15, 0, 3), each = 4)
+randomIDY <- rep(rnorm(15, 0, 75), each = 4)
+exampledata$Appetite <- round(20 - 0.01*exampledata$Preload + randomIDM + rnorm(15*4, 0, 1), 1)
+exampledata$FoodIntake <- round(500 - 0.2*exampledata$Preload + 7*exampledata$Appetite + randomIDY + rnorm(15*4, 0, 50))
+
+head(exampledata, 10)
+```
+
+The predictor, mediator, and outcome variable should all be numeric. You can check this using the following code:
+
+```{r}
+is.numeric(exampledata$Preload)
+is.numeric(exampledata$Appetite)
+is.numeric(exampledata$FoodIntake)
+```
+
+If any of the variables are not numeric, read up on how to change their type to numeric using the `as.numeric()` in Learning Statistics with R.
+
+## Bring the data into the right format
+
+To run the mediation analysis, we'll have to change the structure of the data a bit. This procedure is described in Bauer et al. (2006), and it results in a dataset with a single outcome variable (Z) and two indicator variables ($S_M$ and $S_Y$) that describe whether Z is the mediator (M) or the original outcome variable (Y). The code contains a function for doing this transformation. To use it, we first need to load the package, then apply it to the current dataset:
+
+```{r eval=FALSE}
+library(RMmediation)
+```
+
+
+```{r}
+example_restructured <- restructure_data(X = exampledata$Preload, 
+                                         M = exampledata$Appetite, 
+                                         Y = exampledata$FoodIntake, 
+                                         ID = exampledata$ID)
+```
+
+This is what the first 10 lines of our new dataframe look like:
+
+```{r, echo=FALSE}
+head(example_restructured, 10)
+```
+
+
+
+
+

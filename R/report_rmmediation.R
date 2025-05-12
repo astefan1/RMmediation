@@ -49,7 +49,10 @@ report_rmmediation <- function(fit, digits = 2) {
                                            round(mean(corRanEffAB), digits),
                                            round(mean(SDindirect), digits)))
 
-  return(cat(knitr::kable(fixedcoefs, row.names = FALSE, caption = "Fixed Effects"), "\n", knitr::kable(randomcoefs, caption = "Random Effects"), sep = "\n"))
+  # Compute percentage mediated
+  perc_mediated <- round(indirect/total*100, digits)
+
+  return(cat(knitr::kable(fixedcoefs, row.names = FALSE, caption = "Fixed Effects"), "\n", knitr::kable(randomcoefs, caption = "Random Effects"), "\n", paste0("Percentage mediated: ", perc_mediated)))
 
 
 }

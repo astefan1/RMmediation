@@ -14,3 +14,7 @@ Imports:
     parallel,
     reshape2,
     stats
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

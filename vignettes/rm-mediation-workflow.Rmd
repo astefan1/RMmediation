@@ -20,7 +20,7 @@ library(RMmediation)
 
 ## Introduction
 
-This R-package contains custom functions to compute a 1-1-1 repeated measures mediation analysis using Bayesian estimation. A 1-1-1 repeated-measures mediation analysis is a mediation analysis where predictor (X), mediator (M), and outcome (Y) variable are all measured at the trial level. The package is built based on two articles: [Bauer et al. (2006)](https://doi.apa.org/doi/10.1037/1082-989X.11.2.142) describes the general methodology, including a specific way to structure the data that allows for easy fitting of the mediation model. [Falk et al. (2023)](https://link.springer.com/10.3758/s13428-023-02079-4) provide an implementation in the R package *brms* that we build on here. If you want to work with this code, please try to read these two articles first.
+This R-package contains custom functions to compute a 1-1-1 repeated measures mediation analysis using Bayesian estimation. A 1-1-1 repeated-measures mediation analysis is a mediation analysis where predictor (X), mediator (M), and outcome (Y) variable are all measured at the trial level. The package is built based on two articles: [Bauer et al. (2006)](https://doi.apa.org/doi/10.1037/1082-989X.11.2.142) describes the general methodology, including a specific way to structure the data that allows for easy fitting of the mediation model. [Falk et al. (2024)](https://link.springer.com/10.3758/s13428-023-02079-4) provide an implementation in the R package *brms* that we build on here. If you want to work with this code, please try to read these two articles first.
 
 ## Prerequisites
 
@@ -94,12 +94,50 @@ example_restructured <- restructure_data(X = exampledata$Preload,
                                          ID = exampledata$ID)
 ```
 
+As you can see, this is pretty easy. Simply use the `$` operator to extract the relevant columns from the dataset, and insert the columns as arguments in the `restructure_data()` function: X (Predictor), M (Mediator), Y (Outcome), ID (subject identifier).
+
 This is what the first 10 lines of our new dataframe look like:
 
 ```{r, echo=FALSE}
 head(example_restructured, 10)
 ```
 
+## Conduct the mediation analysis
+
+Now the step we've all been waiting for: Fitting the mediation model. This can be done using another function from our RMmediation package: `rmmediation()` 
+
+The only input our function needs is the restructured dataset. It assumes that you've run the `restructure_data()` function, so if, for some reason, you don't use the provided function for restructuring the dataset, make sure to use a dataset as input that has columns named X, Z, SM, SY, and ID, and that these comply with the Bauer (2006) structure. 
+
+Since it takes a while to fit the model, it's best to save the output to a file using the additional argument `file = "filename"`. The file will be saved in your current working directory (if you're not sure what a working directory is, read the Chapters from Learning Statistics with R). Give the file a name that makes it possible to identify what model you ran just by reading the file name. For example "mymediation" is not a good name, but "mediation_Preload-Appetite-FoodIntake" is better.
+
+```{r}
+fit <- rmmediation(example_restructured,
+                   file = "mediation_Preload-Appetite-FoodIntake")
+```
+
+There is a chance that the fitting process yields warning messages. Please take these seriously and, if necessary, adjust the sampling procedure. You can do this by using *brms* arguments in the `rmmediation()` function. For example, to increase the iterations per chain, use `rmmediation(example_restructured, iter = 10000)`. The default is 4 chains, each with 5000 iterations, including 2000 warm-up samples, no thinning, . There is a good overview of what to do if there are issues with convergence in brms' (i.e., Stan's, which is the underlying statistics "engine") HMC sampling [here](https://mc-stan.org/learn-stan/diagnostics-warnings.html).
+
+## Report the mediation analysis
+
+After fitting the mediation model, you probably want to extract the relevant estimates from the mediation model.
+
+The `rmmediation()` function is just a wrapper around `brm()` from the *brms* package, so you can apply all functions that you would normally use on brms objects. For example, if you want to obtain information about the priors, you can call:
+
+```{r}
+brms::get_prior(fit)
+```
+However, typically, what you're probably interested in are the "typical" statistics reported for a mediation model: Estimates for the indirect effect, direct effect, total effect, percentage mediated, as well as (since it is a repeated-measures model), estimates for the individual variation in these effects. These can be obtained using the custom-made reporting function in the RMmediation package. 
+
+```{r}
+results <- report_rmmediation(fit, digits = 2)
+
+results$fixedEffects
+results$randomEffects
+results$percentMediated
+```
+
+
+Since the model is fitted in the Bayesian framework, no p-value for individual effects is computed. However, as Falk et al. (2024) show, the Bayesian credible intervals have excellent coverage probability (better than bootstrapped confidence intervals) and test decisions based on Bayesian credible intervals can therefore be expected to control type I error probabilities.
 
 
 

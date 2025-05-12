@@ -3,6 +3,7 @@
 #' @param digits Number of reported digits
 #' @importFrom brms as_draws_array
 #' @importFrom knitr kable
+#' @export
 
 report_rmmediation <- function(fit, digits = 2) {
 
@@ -50,9 +51,13 @@ report_rmmediation <- function(fit, digits = 2) {
                                            round(mean(SDindirect), digits)))
 
   # Compute percentage mediated
-  perc_mediated <- round(indirect/total*100, digits)
+  perc_mediated <- round(mean(indirect/total)*100, digits)
 
-  return(cat(knitr::kable(fixedcoefs, row.names = FALSE, caption = "Fixed Effects"), "\n", knitr::kable(randomcoefs, caption = "Random Effects"), "\n", paste0("Percentage mediated: ", perc_mediated)))
+  out <- list(fixedEffects = knitr::kable(fixedcoefs, row.names = FALSE, caption = "Fixed Effects"),
+              randomEffects = knitr::kable(randomcoefs, caption = "Random Effects"),
+              percentMediated = knitr::kable(data.frame("Percent" = perc_mediated), caption = "Percentage Mediated"))
+
+  return(out)
 
 
 }

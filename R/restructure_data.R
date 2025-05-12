@@ -4,6 +4,7 @@
 #' @param Y Dependent variable (must be numeric)
 #' @param ID Subject ID variable
 #' @importFrom reshape2 melt
+#' @export
 
 restructure_data <- function(X, M, Y, ID) {
 

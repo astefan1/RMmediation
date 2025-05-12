@@ -4,6 +4,7 @@
 #' @importFrom brms bf
 #' @importFrom brms brm
 #' @importFrom parallel detectCores
+#' @export
 
 rmmediation <- function(data, ...){
 

@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Workflow for Repeated Measures Mediation</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Workflow for Repeated Measures
+Mediation</h1>
+
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>This R-package contains custom functions to compute a 1-1-1 repeated
+measures mediation analysis using Bayesian estimation. A 1-1-1
+repeated-measures mediation analysis is a mediation analysis where
+predictor (X), mediator (M), and outcome (Y) variable are all measured
+at the trial level. The package is built based on two articles: <a href="https://doi.apa.org/doi/10.1037/1082-989X.11.2.142">Bauer et
+al. (2006)</a> describes the general methodology, including a specific
+way to structure the data that allows for easy fitting of the mediation
+model. <a href="https://link.springer.com/10.3758/s13428-023-02079-4">Falk et
+al. (2024)</a> provide an implementation in the R package <em>brms</em>
+that we build on here. If you want to work with this code, please try to
+read these two articles first.</p>
+</div>
+<div id="prerequisites" class="section level2">
+<h2>Prerequisites</h2>
+<p>To work with this code, you need to have R and RStudio installed on
+your computer. You should also be familiar with how to read in data with
+R and filter it for specific rows and columns. A good introduction to R
+basics is provided in Chapter 3-4 in <a href="https://learningstatisticswithr.com/lsr-0.6.pdf">Learning
+Statistics with R</a>.</p>
+</div>
+<div id="how-to-use-this-code" class="section level2">
+<h2>How to use this code</h2>
+<p>Below are the steps you’ll need to follow to use this code. Copy and
+paste each line of code into an R script and execute it.</p>
+<div id="step-1-install-the-package" class="section level3">
+<h3>Step 1: Install the package</h3>
+<p>The code is stored in the form of an R package. This R package is not
+available on CRAN like your usual R packages, but you can download it
+from an online repository with the code below. Once installed, you can
+call the package using the library() command just as you would use for
+any other R package (if you don’t know what an R package is, read up on
+it in Learning Statistics with R). You’ll only need to install the
+package once on your computer.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;devtools&quot;</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;astefan1/RMmediation&quot;</span>, <span class="at">build_vignettes =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+</div>
+<div id="step-2-read-in-data" class="section level3">
+<h3>Step 2: Read in data</h3>
+<p>In the following, we will assume that your data is initially
+available in long format, with a variable that indicates the subject ID,
+and a variable each for the predictor, mediator, and outcome variable.
+There can be other variables in your dataset (e.g., a variable
+indicating the gender of the subject), but these are the important ones.
+Your dataset should look something like this:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Subject ID</th>
+<th>Predictor X</th>
+<th>Mediator M</th>
+<th>Outcome Y</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>0</td>
+<td>17</td>
+<td>320</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>600</td>
+<td>19.5</td>
+<td>555</td>
+</tr>
+<tr class="odd">
+<td>1</td>
+<td>900</td>
+<td>18.6</td>
+<td>640</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>1200</td>
+<td>15.7</td>
+<td>793</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>0</td>
+<td>20.1</td>
+<td>220</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>600</td>
+<td>22.2</td>
+<td>330</td>
+</tr>
+</tbody>
+</table>
+<p>… and so on. What’s important is that there are multiple measurement
+occasions for each subject, that is, the subject ID should be
+reoccurring in your dataset (if it doesn’t you can probably conduct a
+simple mediation analysis and you don’t need this code). The predictor
+will typically be an experimentally manipulated variable, e.g., food
+intake. The mediator is a variable that you assume will be changed due
+to the food intake, and the outcome variable then changes due to the
+changes in the mediator (and the changes in the predictor).</p>
+<p>For the purpose of explaining the package, we’ll use some simulated
+(i.e., made-up) data. We’ll assume that X is a preload meal (0, 600,
+900, 1200 kcal), Y is the desired food intake (in kcal), and M is an
+appetite rating. There are 15 participants, each participant undergoes
+every condition. Here are the first 10 rows of the dataset, which we’ll
+call <code>exampledata</code>.</p>
+<pre><code>#&gt;    ID Preload Appetite FoodIntake
+#&gt; 1   1       0     17.5        612
+#&gt; 2   1     600      9.9        454
+#&gt; 3   1     900      6.7        444
+#&gt; 4   1    1200      3.9        329
+#&gt; 5   2       0     19.2        571
+#&gt; 6   2     600     13.7        455
+#&gt; 7   2     900      9.7        293
+#&gt; 8   2    1200      7.5        318
+#&gt; 9   3       0     23.0        641
+#&gt; 10  3     600     16.8        535</code></pre>
+<p>The predictor, mediator, and outcome variable should all be numeric.
+You can check this using the following code:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">is.numeric</span>(exampledata<span class="sc">$</span>Preload)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="fu">is.numeric</span>(exampledata<span class="sc">$</span>Appetite)</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="fu">is.numeric</span>(exampledata<span class="sc">$</span>FoodIntake)</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+<p>If any of the variables are not numeric, read up on how to change
+their type to numeric using the <code>as.numeric()</code> in Learning
+Statistics with R.</p>
+</div>
+</div>
+<div id="bring-the-data-into-the-right-format" class="section level2">
+<h2>Bring the data into the right format</h2>
+<p>To run the mediation analysis, we’ll have to change the structure of
+the data a bit. This procedure is described in Bauer et al. (2006), and
+it results in a dataset with a single outcome variable (Z) and two
+indicator variables (<span class="math inline">\(S_M\)</span> and <span class="math inline">\(S_Y\)</span>) that describe whether Z is the
+mediator (M) or the original outcome variable (Y). The code contains a
+function for doing this transformation. To use it, we first need to load
+the package, then apply it to the current dataset:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">library</span>(RMmediation)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>example_restructured <span class="ot">&lt;-</span> <span class="fu">restructure_data</span>(<span class="at">X =</span> exampledata<span class="sc">$</span>Preload, </span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>                                         <span class="at">M =</span> exampledata<span class="sc">$</span>Appetite, </span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>                                         <span class="at">Y =</span> exampledata<span class="sc">$</span>FoodIntake, </span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>                                         <span class="at">ID =</span> exampledata<span class="sc">$</span>ID)</span></code></pre></div>
+<p>As you can see, this is pretty easy. Simply use the <code>$</code>
+operator to extract the relevant columns from the dataset, and insert
+the columns as arguments in the <code>restructure_data()</code>
+function: X (Predictor), M (Mediator), Y (Outcome), ID (subject
+identifier).</p>
+<p>This is what the first 10 lines of our new dataframe look like:</p>
+<pre><code>#&gt;    ID    X    M    Z SM SY
+#&gt; 1   1    0 17.5 17.5  1  0
+#&gt; 2   1  600  9.9  9.9  1  0
+#&gt; 3   1  900  6.7  6.7  1  0
+#&gt; 4   1 1200  3.9  3.9  1  0
+#&gt; 5   2    0 19.2 19.2  1  0
+#&gt; 6   2  600 13.7 13.7  1  0
+#&gt; 7   2  900  9.7  9.7  1  0
+#&gt; 8   2 1200  7.5  7.5  1  0
+#&gt; 9   3    0 23.0 23.0  1  0
+#&gt; 10  3  600 16.8 16.8  1  0</code></pre>
+</div>
+<div id="conduct-the-mediation-analysis" class="section level2">
+<h2>Conduct the mediation analysis</h2>
+<p>Now the step we’ve all been waiting for: Fitting the mediation model.
+This can be done using another function from our RMmediation package:
+<code>rmmediation()</code></p>
+<p>The only input our function needs is the restructured dataset. It
+assumes that you’ve run the <code>restructure_data()</code> function, so
+if, for some reason, you don’t use the provided function for
+restructuring the dataset, make sure to use a dataset as input that has
+columns named X, Z, SM, SY, and ID, and that these comply with the Bauer
+(2006) structure.</p>
+<p>Since it takes a while to fit the model, it’s best to save the output
+to a file using the additional argument <code>file = &quot;filename&quot;</code>.
+The file will be saved in your current working directory (if you’re not
+sure what a working directory is, read the Chapters from Learning
+Statistics with R). Give the file a name that makes it possible to
+identify what model you ran just by reading the file name. For example
+“mymediation” is not a good name, but
+“mediation_Preload-Appetite-FoodIntake” is better.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">rmmediation</span>(example_restructured,</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>                   <span class="at">file =</span> <span class="st">&quot;mediation_Preload-Appetite-FoodIntake&quot;</span>)</span></code></pre></div>
+<p>There is a chance that the fitting process yields warning messages.
+Please take these seriously and, if necessary, adjust the sampling
+procedure. You can do this by using <em>brms</em> arguments in the
+<code>rmmediation()</code> function. For example, to increase the
+iterations per chain, use
+<code>rmmediation(example_restructured, iter = 10000)</code>. The
+default is 4 chains, each with 5000 iterations, including 2000 warm-up
+samples, no thinning, . There is a good overview of what to do if there
+are issues with convergence in brms’ (i.e., Stan’s, which is the
+underlying statistics “engine”) HMC sampling <a href="https://mc-stan.org/learn-stan/diagnostics-warnings.html">here</a>.</p>
+</div>
+<div id="report-the-mediation-analysis" class="section level2">
+<h2>Report the mediation analysis</h2>
+<p>After fitting the mediation model, you probably want to extract the
+relevant estimates from the mediation model.</p>
+<p>The <code>rmmediation()</code> function is just a wrapper around
+<code>brm()</code> from the <em>brms</em> package, so you can apply all
+functions that you would normally use on brms objects. For example, if
+you want to obtain information about the priors, you can call:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>brms<span class="sc">::</span><span class="fu">get_prior</span>(fit)</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="co">#&gt;                  prior class coef group resp  dpar nlpar lb ub       source</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co">#&gt;                 (flat)     b                                        default</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co">#&gt;                 (flat)     b   SM                              (vectorized)</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co">#&gt;                 (flat)     b  SMX                              (vectorized)</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">#&gt;                 (flat)     b   SY                              (vectorized)</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co">#&gt;                 (flat)     b  SYM                              (vectorized)</span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co">#&gt;                 (flat)     b  SYX                              (vectorized)</span></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="co">#&gt;                 (flat)     b                 sigma                  default</span></span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a><span class="co">#&gt;                 (flat)     b   SM            sigma             (vectorized)</span></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a><span class="co">#&gt;                 (flat)     b   SY            sigma             (vectorized)</span></span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a><span class="co">#&gt;   lkj_corr_cholesky(1)     L                                        default</span></span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a><span class="co">#&gt;   lkj_corr_cholesky(1)     L         ID                        (vectorized)</span></span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a><span class="co">#&gt;  student_t(3, 0, 72.9)    sd                              0         default</span></span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a><span class="co">#&gt;  student_t(3, 0, 72.9)    sd         ID                   0    (vectorized)</span></span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a><span class="co">#&gt;  student_t(3, 0, 72.9)    sd   SM    ID                   0    (vectorized)</span></span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a><span class="co">#&gt;  student_t(3, 0, 72.9)    sd  SMX    ID                   0    (vectorized)</span></span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a><span class="co">#&gt;  student_t(3, 0, 72.9)    sd   SY    ID                   0    (vectorized)</span></span>
+<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a><span class="co">#&gt;  student_t(3, 0, 72.9)    sd  SYM    ID                   0    (vectorized)</span></span>
+<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a><span class="co">#&gt;  student_t(3, 0, 72.9)    sd  SYX    ID                   0    (vectorized)</span></span></code></pre></div>
+<p>However, typically, what you’re probably interested in are the
+“typical” statistics reported for a mediation model: Estimates for the
+indirect effect, direct effect, total effect, percentage mediated, as
+well as (since it is a repeated-measures model), estimates for the
+individual variation in these effects. These can be obtained using the
+custom-made reporting function in the RMmediation package.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">report_rmmediation</span>(fit, <span class="at">digits =</span> <span class="dv">2</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>results<span class="sc">$</span>fixedEffects</span></code></pre></div>
+<table>
+<caption>Fixed Effects</caption>
+<thead>
+<tr class="header">
+<th align="left">Parameter</th>
+<th align="left">Estimate</th>
+<th align="left">95% CI lower</th>
+<th align="left">95% CI upper</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">a</td>
+<td align="left">-0.01</td>
+<td align="left">-0.01</td>
+<td align="left">-0.01</td>
+</tr>
+<tr class="even">
+<td align="left">b</td>
+<td align="left">3.53</td>
+<td align="left">-8.61</td>
+<td align="left">16.05</td>
+</tr>
+<tr class="odd">
+<td align="left">c’</td>
+<td align="left">-0.24</td>
+<td align="left">-0.36</td>
+<td align="left">-0.11</td>
+</tr>
+<tr class="even">
+<td align="left">indirect</td>
+<td align="left">-0.04</td>
+<td align="left">-0.16</td>
+<td align="left">0.09</td>
+</tr>
+<tr class="odd">
+<td align="left">total</td>
+<td align="left">-0.27</td>
+<td align="left">-0.3</td>
+<td align="left">-0.24</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>results<span class="sc">$</span>randomEffects</span></code></pre></div>
+<table>
+<caption>Random Effects</caption>
+<thead>
+<tr class="header">
+<th align="left">Parameter</th>
+<th align="right">Estimate</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">SD(a)</td>
+<td align="right">0.00</td>
+</tr>
+<tr class="even">
+<td align="left">SD(b)</td>
+<td align="right">2.18</td>
+</tr>
+<tr class="odd">
+<td align="left">cor(a,b)</td>
+<td align="right">0.09</td>
+</tr>
+<tr class="even">
+<td align="left">SD(indirect)</td>
+<td align="right">0.15</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>results<span class="sc">$</span>percentMediated</span></code></pre></div>
+<table>
+<caption>Percentage Mediated</caption>
+<thead>
+<tr class="header">
+<th align="right">Percent</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">13.03</td>
+</tr>
+</tbody>
+</table>
+<p>Since the model is fitted in the Bayesian framework, no p-value for
+individual effects is computed. However, as Falk et al. (2024) show, the
+Bayesian credible intervals have excellent coverage probability (better
+than bootstrapped confidence intervals) and test decisions based on
+Bayesian credible intervals can therefore be expected to control type I
+error probabilities.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

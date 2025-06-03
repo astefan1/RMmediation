@@ -119,6 +119,8 @@ There is a chance that the fitting process yields warning messages. Please take 
 
 ## Report the mediation analysis
 
+### Extracting relevant statistics
+
 After fitting the mediation model, you probably want to extract the relevant estimates from the mediation model.
 
 The `rmmediation()` function is just a wrapper around `brm()` from the *brms* package, so you can apply all functions that you would normally use on brms objects. For example, if you want to obtain information about the priors, you can call:
@@ -139,6 +141,10 @@ results$percentMediated
 
 Since the model is fitted in the Bayesian framework, no p-value for individual effects is computed. However, as Falk et al. (2024) show, the Bayesian credible intervals have excellent coverage probability (better than bootstrapped confidence intervals) and test decisions based on Bayesian credible intervals can therefore be expected to control type I error probabilities.
 
+### Writing up the mediation analysis
 
+Below is a worked-out example for how to report a mediation analysis using the code from this package. Please use with care and adapt to your own application example.
+
+> We tested whether the effect of Predictor X (*preload meal size*) on Outcome Y (*food intake*) was mediated by Mediator M (*appetite*) using a repeated-measures mediation analysis (Bauer, 2006). Coefficients were estimated using Bayesian estimation procedures implemented in the *brms* package (Bürkner, 2017; Falk et al., 2024). The estimated indirect effect was small and negative, *ab* = -0.04, and the 95% credible interval covered zero, 95%CI[-0.16, 0.09], indicating that after seeing the data, it is plausible that there is no mediating effect of M (*appetite*). On average, about 13% of the estimated total effect of X (*preload meal size*) on Y (*food intake*) was mediated by M (*appetite*). The standard deviation of indirect effects, characterizing between-person differences in mediation, is estimated at $\sigma$ = 0.15.
 
 

@@ -539,6 +539,8 @@ underlying statistics “engine”) HMC sampling <a href="https://mc-stan.org/le
 </div>
 <div id="report-the-mediation-analysis" class="section level2">
 <h2>Report the mediation analysis</h2>
+<div id="extracting-relevant-statistics" class="section level3">
+<h3>Extracting relevant statistics</h3>
 <p>After fitting the mediation model, you probably want to extract the
 relevant estimates from the mediation model.</p>
 <p>The <code>rmmediation()</code> function is just a wrapper around
@@ -665,6 +667,29 @@ Bayesian credible intervals have excellent coverage probability (better
 than bootstrapped confidence intervals) and test decisions based on
 Bayesian credible intervals can therefore be expected to control type I
 error probabilities.</p>
+</div>
+<div id="writing-up-the-mediation-analysis" class="section level3">
+<h3>Writing up the mediation analysis</h3>
+<p>Below is a worked-out example for how to report a mediation analysis
+using the code from this package. Please use with care and adapt to your
+own application example.</p>
+<blockquote>
+<p>We tested whether the effect of Predictor X (<em>preload meal
+size</em>) on Outcome Y (<em>food intake</em>) was mediated by Mediator
+M (<em>appetite</em>) using a repeated-measures mediation analysis
+(Bauer, 2006). Coefficients were estimated using Bayesian estimation
+procedures implemented in the <em>brms</em> package (Bürkner, 2017; Falk
+et al., 2024). The estimated indirect effect was small and negative,
+<em>ab</em> = -0.04, and the 95% credible interval covered zero,
+95%CI[-0.16, 0.09], indicating that after seeing the data, it is
+plausible that there is no mediating effect of M (<em>appetite</em>). On
+average, about 13% of the estimated total effect of X (<em>preload meal
+size</em>) on Y (<em>food intake</em>) was mediated by M
+(<em>appetite</em>). The standard deviation of indirect effects,
+characterizing between-person differences in mediation, is estimated at
+<span class="math inline">\(\sigma\)</span> = 0.15.</p>
+</blockquote>
+</div>
 </div>
 
 
